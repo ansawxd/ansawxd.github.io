@@ -1,0 +1,577 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Секретное послание</title>
+<link href="https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@900&family=UnifrakturMaguntia&display=swap" rel="stylesheet">
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  
+  body {
+    background: #000;
+    overflow: hidden;
+    height: 100vh;
+    width: 100vw;
+    font-family: 'Cinzel Decorative', serif;
+  }
+
+  .scene {
+    position: absolute;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    opacity: 0;
+    pointer-events: none;
+  }
+
+  .scene.active {
+    opacity: 1;
+    pointer-events: all;
+  }
+
+  /* === СЦЕНА 1: ДОМ НОЧЬЮ === */
+  #scene1 {
+    background: linear-gradient(180deg, #0a0e27 0%, #1a2040 50%, #2a3060 100%);
+  }
+
+  .house-container {
+    position: relative;
+    width: 300px;
+    height: 300px;
+  }
+
+  .house {
+    position: absolute;
+    bottom: 60px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 140px;
+    height: 100px;
+  }
+
+  .house-body {
+    position: absolute;
+    bottom: 0;
+    width: 140px;
+    height: 80px;
+    background: linear-gradient(180deg, #4ade80 0%, #22c55e 100%);
+    border-radius: 4px;
+    box-shadow: 0 0 30px rgba(74, 222, 128, 0.5);
+  }
+
+  .house-roof {
+    position: absolute;
+    top: 0;
+    left: -10px;
+    width: 0;
+    height: 0;
+    border-left: 80px solid transparent;
+    border-right: 80px solid transparent;
+    border-bottom: 50px solid #16a34a;
+    filter: drop-shadow(0 0 15px rgba(74, 222, 128, 0.6));
+  }
+
+  .house-door {
+    position: absolute;
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 30px;
+    height: 45px;
+    background: #0a0e27;
+    border-radius: 15px 15px 0 0;
+  }
+
+  .house-window {
+    position: absolute;
+    width: 20px;
+    height: 20px;
+    background: #0a0e27;
+    border-radius: 2px;
+  }
+
+  .house-window.left { bottom: 30px; left: 20px; }
+  .house-window.right { bottom: 30px; right: 20px; }
+
+  .chimney {
+    position: absolute;
+    top: -10px;
+    right: 20px;
+    width: 20px;
+    height: 30px;
+    background: #16a34a;
+  }
+
+  .ground {
+    position: absolute;
+    bottom: 0;
+    width: 100%;
+    height: 60px;
+    background: linear-gradient(180deg, #1a2040 0%, #0a0e27 100%);
+    border-top: 2px solid #4ade80;
+    box-shadow: 0 -5px 20px rgba(74, 222, 128, 0.3);
+  }
+
+  .star {
+    position: absolute;
+    top: 30px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 60px;
+    height: 60px;
+    opacity: 0;
+    animation: starAppear 2s ease-out 1s forwards;
+  }
+
+  .star svg {
+    width: 100%;
+    height: 100%;
+    filter: drop-shadow(0 0 20px #fff) drop-shadow(0 0 40px #4ade80);
+  }
+
+  @keyframes starAppear {
+    0% { opacity: 0; transform: translateX(-50%) scale(0) rotate(0deg); }
+    50% { opacity: 1; transform: translateX(-50%) scale(1.3) rotate(180deg); }
+    100% { opacity: 1; transform: translateX(-50%) scale(1) rotate(360deg); }
+  }
+
+  /* === СЦЕНА 2: ГЛАЗ === */
+  #scene2 {
+    background: radial-gradient(circle at center, #1a0000 0%, #000 100%);
+  }
+
+  .eye-container {
+    position: relative;
+    width: 300px;
+    height: 200px;
+  }
+
+  .eye {
+    position: relative;
+    width: 280px;
+    height: 140px;
+    background: radial-gradient(ellipse at center, #ff4444 0%, #cc0000 50%, #660000 100%);
+    border-radius: 50% 50% 50% 50% / 60% 60% 40% 40%;
+    box-shadow: 
+      0 0 40px rgba(255, 0, 0, 0.8),
+      0 0 80px rgba(255, 0, 0, 0.4),
+      inset 0 0 30px rgba(0, 0, 0, 0.5);
+    overflow: hidden;
+    animation: eyePulse 2s ease-in-out infinite;
+  }
+
+  .pupil {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 70px;
+    height: 70px;
+    background: radial-gradient(circle, #000 40%, #330000 100%);
+    border-radius: 50%;
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.8);
+  }
+
+  .eye-shine {
+    position: absolute;
+    top: 30%;
+    left: 35%;
+    width: 25px;
+    height: 25px;
+    background: #fff;
+    border-radius: 50%;
+    box-shadow: 0 0 15px #fff, 0 0 30px #ff6666;
+    animation: shineMove 3s ease-in-out infinite;
+  }
+
+  .tear {
+    position: absolute;
+    bottom: -20px;
+    right: 40px;
+    width: 15px;
+    height: 30px;
+    background: linear-gradient(180deg, #ff0000 0%, transparent 100%);
+    border-radius: 50%;
+    opacity: 0.7;
+    animation: tearDrop 2s ease-in infinite;
+  }
+
+  @keyframes eyePulse {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.05); }
+  }
+
+  @keyframes shineMove {
+    0%, 100% { transform: translate(0, 0); }
+    50% { transform: translate(10px, -5px); }
+  }
+
+  @keyframes tearDrop {
+    0% { transform: translateY(0); opacity: 0.7; }
+    100% { transform: translateY(40px); opacity: 0; }
+  }
+
+  /* === СЦЕНА 3: МЕЧ === */
+  #scene3 {
+    background: linear-gradient(180deg, #1a1040 0%, #2a1860 50%, #0a0520 100%);
+  }
+
+  .sword-container {
+    position: relative;
+    width: 200px;
+    height: 400px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .sword {
+    position: relative;
+    width: 40px;
+    height: 280px;
+    background: linear-gradient(180deg, #fff 0%, #ffaa66 30%, #ff6644 60%, #aa4422 100%);
+    clip-path: polygon(30% 0%, 70% 0%, 70% 85%, 100% 100%, 0% 100%, 30% 85%);
+    box-shadow: 
+      0 0 30px rgba(255, 170, 102, 0.8),
+      0 0 60px rgba(255, 102, 68, 0.4);
+    animation: swordGlow 2s ease-in-out infinite;
+  }
+
+  .sword-handle {
+    width: 20px;
+    height: 80px;
+    background: linear-gradient(180deg, #333 0%, #111 100%);
+    border-radius: 5px;
+    position: relative;
+  }
+
+  .sword-guard {
+    width: 100px;
+    height: 15px;
+    background: linear-gradient(90deg, #666 0%, #aaa 50%, #666 100%);
+    border-radius: 3px;
+    margin-bottom: -5px;
+  }
+
+  .hand {
+    position: absolute;
+    width: 50px;
+    height: 30px;
+    background: linear-gradient(180deg, #ffcc99 0%, #ff9966 100%);
+    border-radius: 15px;
+    box-shadow: 0 0 15px rgba(255, 170, 102, 0.6);
+  }
+
+  .hand.left {
+    left: -40px;
+    top: 300px;
+    animation: handGrabLeft 1s ease-out 0.5s both;
+  }
+
+  .hand.right {
+    right: -40px;
+    top: 300px;
+    animation: handGrabRight 1s ease-out 0.5s both;
+  }
+
+  @keyframes swordGlow {
+    0%, 100% { filter: brightness(1); }
+    50% { filter: brightness(1.3); }
+  }
+
+  @keyframes handGrabLeft {
+    0% { transform: translateX(-30px); opacity: 0; }
+    100% { transform: translateX(0); opacity: 1; }
+  }
+
+  @keyframes handGrabRight {
+    0% { transform: translateX(30px); opacity: 0; }
+    100% { transform: translateX(0); opacity: 1; }
+  }
+
+  /* === СЦЕНА 4: КОРОНА === */
+  #scene4 {
+    background: radial-gradient(circle at center, #2a1a00 0%, #0a0500 100%);
+  }
+
+  .crown-container {
+    position: relative;
+    width: 300px;
+    height: 300px;
+  }
+
+  .crown-piece {
+    position: absolute;
+    background: linear-gradient(180deg, #ff4444 0%, #cc0000 50%, #880000 100%);
+    box-shadow: 0 0 20px rgba(255, 0, 0, 0.6);
+  }
+
+  .crown-top {
+    width: 120px;
+    height: 60px;
+    top: 50px;
+    left: 90px;
+    clip-path: polygon(0% 100%, 10% 0%, 30% 60%, 50% 0%, 70% 60%, 90% 0%, 100% 100%);
+    animation: crownTopFloat 3s ease-in-out infinite;
+  }
+
+  .crown-bottom {
+    width: 140px;
+    height: 50px;
+    top: 130px;
+    left: 80px;
+    clip-path: polygon(0% 0%, 100% 0%, 100% 100%, 0% 100%);
+    border-radius: 0 0 20px 20px;
+    animation: crownBottomFloat 3s ease-in-out infinite;
+  }
+
+  .crown-crack {
+    position: absolute;
+    top: 100px;
+    left: 140px;
+    width: 20px;
+    height: 80px;
+    background: #000;
+    clip-path: polygon(40% 0%, 60% 0%, 30% 50%, 70% 100%, 50% 100%, 20% 50%);
+    animation: crackAppear 1s ease-out 1s both;
+  }
+
+  @keyframes crownTopFloat {
+    0%, 100% { transform: translateY(0) rotate(0deg); }
+    50% { transform: translateY(-10px) rotate(-3deg); }
+  }
+
+  @keyframes crownBottomFloat {
+    0%, 100% { transform: translateY(0) rotate(0deg); }
+    50% { transform: translateY(10px) rotate(3deg); }
+  }
+
+  @keyframes crackAppear {
+    0% { opacity: 0; transform: scaleY(0); }
+    100% { opacity: 1; transform: scaleY(1); }
+  }
+
+  /* === СЦЕНА 5: НАДПИСЬ === */
+  #scene5 {
+    background: radial-gradient(circle at center, #1a0000 0%, #000 100%);
+    flex-direction: column;
+  }
+
+  .final-text {
+    font-family: 'UnifrakturMaguntia', cursive;
+    font-size: clamp(2rem, 8vw, 5rem);
+    color: #fff;
+    text-align: center;
+    padding: 20px;
+    text-shadow: 
+      0 0 10px #ff0000,
+      0 0 20px #ff0000,
+      0 0 40px #cc0000,
+      0 0 80px #880000,
+      0 0 120px #440000,
+      2px 2px 4px rgba(0, 0, 0, 0.8);
+    animation: textReveal 2s ease-out both, textGlow 3s ease-in-out 2s infinite;
+    letter-spacing: 4px;
+    max-width: 90vw;
+    line-height: 1.3;
+  }
+
+  .final-text .accent {
+    color: #ff4444;
+    font-family: 'Cinzel Decorative', serif;
+    font-weight: 900;
+  }
+
+  @keyframes textReveal {
+    0% { 
+      opacity: 0; 
+      transform: translateY(50px) scale(0.8);
+      filter: blur(10px);
+    }
+    100% { 
+      opacity: 1; 
+      transform: translateY(0) scale(1);
+      filter: blur(0);
+    }
+  }
+
+  @keyframes textGlow {
+    0%, 100% { 
+      text-shadow: 
+        0 0 10px #ff0000,
+        0 0 20px #ff0000,
+        0 0 40px #cc0000,
+        0 0 80px #880000;
+    }
+    50% { 
+      text-shadow: 
+        0 0 20px #ff4444,
+        0 0 40px #ff0000,
+        0 0 60px #cc0000,
+        0 0 100px #880000,
+        0 0 140px #440000;
+    }
+  }
+
+  /* Частицы на фоне */
+  .particles {
+    position: absolute;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    pointer-events: none;
+    overflow: hidden;
+  }
+
+  .particle {
+    position: absolute;
+    width: 3px;
+    height: 3px;
+    background: rgba(255, 68, 68, 0.6);
+    border-radius: 50%;
+    animation: particleFloat 4s linear infinite;
+  }
+
+  @keyframes particleFloat {
+    0% { transform: translateY(100vh) scale(0); opacity: 0; }
+    10% { opacity: 1; }
+    90% { opacity: 1; }
+    100% { transform: translateY(-100px) scale(1); opacity: 0; }
+  }
+
+  /* Кнопка повтора */
+  .replay-btn {
+    position: absolute;
+    bottom: 30px;
+    left: 50%;
+    transform: translateX(-50%);
+    padding: 12px 30px;
+    background: transparent;
+    border: 2px solid #ff4444;
+    color: #ff4444;
+    font-family: 'Cinzel Decorative', serif;
+    font-size: 14px;
+    cursor: pointer;
+    border-radius: 30px;
+    opacity: 0;
+    animation: fadeIn 1s ease-out 4s both;
+    transition: all 0.3s;
+  }
+
+  .replay-btn:hover {
+    background: #ff4444;
+    color: #000;
+    box-shadow: 0 0 20px rgba(255, 68, 68, 0.6);
+  }
+
+  @keyframes fadeIn {
+    to { opacity: 1; }
+  }
+</style>
+</head>
+<body>
+
+<!-- Сцена 1: Дом ночью -->
+<div class="scene active" id="scene1">
+  <div class="house-container">
+    <div class="star">
+      <svg viewBox="0 0 100 100">
+        <path d="M50 0 L55 45 L100 50 L55 55 L50 100 L45 55 L0 50 L45 45 Z" fill="#fff"/>
+      </svg>
+    </div>
+    <div class="house">
+      <div class="chimney"></div>
+      <div class="house-roof"></div>
+      <div class="house-body">
+        <div class="house-window left"></div>
+        <div class="house-window right"></div>
+        <div class="house-door"></div>
+      </div>
+    </div>
+    <div class="ground"></div>
+  </div>
+</div>
+
+<!-- Сцена 2: Глаз -->
+<div class="scene" id="scene2">
+  <div class="eye-container">
+    <div class="eye">
+      <div class="pupil"></div>
+      <div class="eye-shine"></div>
+    </div>
+    <div class="tear"></div>
+  </div>
+</div>
+
+<!-- Сцена 3: Меч -->
+<div class="scene" id="scene3">
+  <div class="sword-container">
+    <div class="sword-handle"></div>
+    <div class="sword-guard"></div>
+    <div class="sword"></div>
+    <div class="hand left"></div>
+    <div class="hand right"></div>
+  </div>
+</div>
+
+<!-- Сцена 4: Корона -->
+<div class="scene" id="scene4">
+  <div class="crown-container">
+    <div class="crown-piece crown-top"></div>
+    <div class="crown-piece crown-bottom"></div>
+    <div class="crown-crack"></div>
+  </div>
+</div>
+
+<!-- Сцена 5: Надпись -->
+<div class="scene" id="scene5">
+  <div class="particles" id="particles"></div>
+  <div class="final-text">
+    <!-- 👇 ЗАМЕНИ ТЕКСТ НИЖЕ НА СВОЙ 👇 -->
+    Здесь будет твоя надпись
+    <!-- 👆 ЗАМЕНИ ТЕКСТ ВЫШЕ НА СВОЙ 👆 -->
+  </div>
+  <button class="replay-btn" onclick="location.reload()">↻ Повторить</button>
+</div>
+
+<script>
+  const scenes = ['scene1', 'scene2', 'scene3', 'scene4', 'scene5'];
+  const durations = [3000, 3000, 3000, 3000, 999999]; // длительность каждой сцены в мс
+  let currentScene = 0;
+
+  function showScene(index) {
+    scenes.forEach((id, i) => {
+      document.getElementById(id).classList.toggle('active', i === index);
+    });
+  }
+
+  function nextScene() {
+    if (currentScene < scenes.length - 1) {
+      currentScene++;
+      showScene(currentScene);
+      if (currentScene === scenes.length - 1) {
+        createParticles();
+      }
+      setTimeout(nextScene, durations[currentScene]);
+    }
+  }
+
+  function createParticles() {
+    const container = document.getElementById('particles');
+    for (let i = 0; i < 30; i++) {
+      const p = document.createElement('div');
+      p.className = 'particle';
+      p.style.left = Math.random() * 100 + '%';
+      p.style.animationDelay = Math.random() * 4 + 's';
+      p.style.animationDuration = (3 + Math.random() * 3) + 's';
+      container.appendChild(p);
+    }
+  }
+
+  setTimeout(nextScene, durations[0]);
+</script>
+
+</body>
+</html>
